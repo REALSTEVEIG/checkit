@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 
@@ -6,12 +6,14 @@ import { UsersService } from '../users/users.service';
 export class AuthService {
   constructor(
     private jwtService: JwtService,
-    private usersService: UsersService,
+    @Inject(forwardRef(() => UsersService)) private usersService: UsersService,
   ) {}
 
   async validateUser(username: string, pass: string) {
     const user = await this.usersService.findByUsername(username);
-    if (user && user.password === pass) return user;
+    if (user && user.password === pass) {
+      return user;
+    }
     return null;
   }
 
