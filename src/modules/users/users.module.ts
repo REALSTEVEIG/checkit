@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
 import { UsersService } from './users.service';
-import { PrismaService } from '../../shared/services/prisma.services';
+import { SharedModule } from '../../shared/services/shared.module';
 
 @Module({
-  providers: [UsersService, PrismaService],
+  imports: [SharedModule, JwtModule],
+  providers: [UsersService],
   exports: [UsersService],
 })
 export class UsersModule {}
