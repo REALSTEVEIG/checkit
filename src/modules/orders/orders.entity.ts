@@ -6,3 +6,9 @@ export class Order {
   status!: 'Review' | 'Processing' | 'Completed';
   userId!: number;
 }
+
+export enum OrderStatus {
+  REVIEW = 'REVIEW',
+  PROCESSING = 'PROCESSING',
+  COMPLETED = 'COMPLETED',
+}
