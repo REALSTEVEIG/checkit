@@ -16,6 +16,7 @@ export class OrdersController {
   @ApiOperation({ summary: 'Create a new order' })
   @ApiResponse({ status: 201, description: 'Order created successfully.' })
   @ApiResponse({ status: 400, description: 'Invalid input data.' })
+  @ApiResponse({ status: 500, description: 'Internal server error.' })
   async createOrder(@Body() createOrderDto: CreateOrderDto) {
     return this.ordersService.createOrder(createOrderDto);
   }
@@ -26,6 +27,7 @@ export class OrdersController {
   @ApiParam({ name: 'id', description: 'The ID of the order' })
   @ApiResponse({ status: 200, description: 'Order status updated successfully.' })
   @ApiResponse({ status: 404, description: 'Order not found.' })
+  @ApiResponse({ status: 500, description: 'Internal server error.' })
   async updateOrderStatus(@Param('id') id: number, @Body() status: OrderStatus) {
     return this.ordersService.updateOrderStatus(id, status);
   }
@@ -35,6 +37,7 @@ export class OrdersController {
   @ApiParam({ name: 'userId', description: 'The ID of the user' })
   @ApiResponse({ status: 200, description: 'Orders retrieved successfully.' })
   @ApiResponse({ status: 404, description: 'No orders found for the user.' })
+  @ApiResponse({ status: 500, description: 'Internal server error.' })
   async getOrdersByUser(@Param('userId') userId: number) {
     return this.ordersService.findOrdersByUser(userId);
   }
