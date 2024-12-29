@@ -51,20 +51,4 @@ export class UsersService {
       );
     }
   }
-
-  async login(user: any) {
-    try {
-      const payload = {
-        username: user.username,
-        sub: user.id,
-        role: user.role,
-      };
-      return { access_token: this.jwtService.sign(payload) };
-    } catch (error: any) {
-      throw new HttpException(
-        `Error during login: ${error.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
 }

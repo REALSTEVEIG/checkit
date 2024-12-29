@@ -2,6 +2,7 @@ import { Injectable, Inject, forwardRef, HttpException, HttpStatus } from '@nest
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import bcrypt from 'bcryptjs';
+import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
@@ -22,13 +23,22 @@ export class AuthService {
     return user;
   }
   
-  async login(user: any) {
-    const payload = { username: user.username, sub: user.id, role: user.role };
+  async login(loginDto: LoginDto) {
     try {
-      const access_token = this.jwtService.sign(payload);
-      return { access_token };
-    } catch (error) {
-      throw new HttpException(`'Error generating JWT token '${error}`, HttpStatus.INTERNAL_SERVER_ERROR);
+      const { username, password } = loginDto;
+      const user = await this.validateUser(username, password);
+      
+      const payload = {
+        username: user.username,
+        sub: user.id,
+        role: user.role,
+      };
+      return { access_token: this.jwtService.sign(payload) };
+    } catch (error: any) {
+      throw new HttpException(
+        `Error during login: ${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

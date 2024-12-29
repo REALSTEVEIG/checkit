@@ -18,7 +18,7 @@ export class AuthController {
 
   @Post('login')
   @ApiOperation({ summary: 'Login and get a JWT token' })
-  @ApiResponse({ status: 200, description: 'Successfully authenticated.' })
+  @ApiResponse({ status: 201, description: 'Successfully authenticated.' })
   @ApiResponse({ status: 401, description: 'Invalid credentials.' })
   @ApiResponse({ status: 500, description: 'Internal server error.' })
   async login(@Body() loginDto: LoginDto) {
