@@ -1,5 +1,10 @@
 import { PrismaService } from 'shared/services/prisma.services';
-import { Injectable, BadRequestException, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 
 @Injectable()
 export class ChatService {
@@ -14,7 +19,10 @@ export class ChatService {
         },
       });
     } catch (error: any) {
-      throw new HttpException(`Error creating chat: ${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        `Error creating chat: ${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -25,7 +33,9 @@ export class ChatService {
       });
 
       if (chatRoom?.isClosed) {
-        throw new BadRequestException('Chat room is closed. Cannot add messages.');
+        throw new BadRequestException(
+          'Chat room is closed. Cannot add messages.',
+        );
       }
 
       return await this.prisma.message.create({
@@ -36,7 +46,10 @@ export class ChatService {
         },
       });
     } catch (error: any) {
-      throw new HttpException(`Error adding message: ${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        `Error adding message: ${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -50,7 +63,10 @@ export class ChatService {
         },
       });
     } catch (error: any) {
-      throw new HttpException(`Error closing chat: ${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        `Error closing chat: ${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -61,7 +77,10 @@ export class ChatService {
         orderBy: { createdAt: 'asc' },
       });
     } catch (error: any) {
-      throw new HttpException(`Error retrieving messages: ${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        `Error retrieving messages: ${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

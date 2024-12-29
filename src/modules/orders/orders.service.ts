@@ -16,7 +16,10 @@ export class OrdersService {
       await this.chatService.createChat(order.id);
       return order;
     } catch (error: any) {
-      throw new HttpException(`Error creating order: ${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        `Error creating order: ${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -27,7 +30,10 @@ export class OrdersService {
         data: { status },
       });
     } catch (error: any) {
-      throw new HttpException(`Error updating order status: ${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        `Error updating order status: ${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -35,7 +41,10 @@ export class OrdersService {
     try {
       return await this.prisma.order.findMany({ where: { userId } });
     } catch (error: any) {
-      throw new HttpException(`Error finding orders: ${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        `Error finding orders: ${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

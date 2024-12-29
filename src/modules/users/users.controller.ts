@@ -16,6 +16,9 @@ export class UsersController {
   @ApiResponse({ status: 500, description: 'Internal server error.' })
   async registerUser(@Body() registerUserDto: RegisterUserDto) {
     const hashedPassword = await bcrypt.hash(registerUserDto.password, 10);
-    return this.usersService.createUser({ ...registerUserDto, password: hashedPassword });
+    return this.usersService.createUser({
+      ...registerUserDto,
+      password: hashedPassword,
+    });
   }
 }

@@ -1,4 +1,12 @@
-import { Controller, Post, Body, Get, Param, Patch, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  Patch,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { OrdersService } from './orders.service';
 import { OrderStatus } from './orders.entity';
@@ -25,10 +33,16 @@ export class OrdersController {
   @Roles('Admin')
   @ApiOperation({ summary: 'Update the status of an order' })
   @ApiParam({ name: 'id', description: 'The ID of the order' })
-  @ApiResponse({ status: 200, description: 'Order status updated successfully.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Order status updated successfully.',
+  })
   @ApiResponse({ status: 404, description: 'Order not found.' })
   @ApiResponse({ status: 500, description: 'Internal server error.' })
-  async updateOrderStatus(@Param('id') id: number, @Body() status: OrderStatus) {
+  async updateOrderStatus(
+    @Param('id') id: number,
+    @Body() status: OrderStatus,
+  ) {
     return this.ordersService.updateOrderStatus(id, status);
   }
 
