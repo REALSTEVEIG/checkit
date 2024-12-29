@@ -7,9 +7,16 @@ import { OrdersModule } from './modules/orders/orders.module';
 import { ChatModule } from './modules/chat/chat.module';
 import { APP_FILTER } from '@nestjs/core';
 import { AllExceptionsFilter } from 'shared/filters/all-exceptions.filter';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [AuthModule, UsersModule, OrdersModule, ChatModule],
+  imports: [
+    ConfigModule.forRoot(),
+    AuthModule,
+    UsersModule,
+    OrdersModule,
+    ChatModule,
+  ],
   controllers: [AppController],
   providers: [
     AppService,

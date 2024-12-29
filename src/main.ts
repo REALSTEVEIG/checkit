@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -17,6 +18,14 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
+  const configService = app.get(ConfigService);
+  const jwtSecret = configService.get<string>('JWT_SECRET');
+
+  if (!jwtSecret) {
+    throw new Error('JWT_SECRET is not defined');
+  }
+
   await app.listen(3000);
 }
+
 bootstrap();
