@@ -1,4 +1,9 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  Injectable,
+  HttpException,
+  HttpStatus,
+  ConflictException,
+} from '@nestjs/common';
 import { PrismaService } from 'shared/services/prisma.services';
 import { JwtService } from '@nestjs/jwt';
 
@@ -26,6 +31,18 @@ export class UsersService {
 
   async createUser(data: any) {
     try {
+      const existingUser = await this.prisma.user.findFirst({
+        where: {
+          OR: [{ email: data.email }, { username: data.username }],
+        },
+      });
+
+      if (existingUser) {
+        throw new ConflictException(
+          `Email or Username is already in use. Please choose another one.`,
+        );
+      }
+
       return await this.prisma.user.create({ data });
     } catch (error: any) {
       throw new HttpException(
