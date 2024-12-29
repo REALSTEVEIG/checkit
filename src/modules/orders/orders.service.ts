@@ -1,13 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../shared/services/prisma.services';
-import { OrderStatus } from './orders.entity'; 
+import { PrismaService } from 'shared/services/prisma.services';
+import { OrderStatus } from './orders.entity';
+import { ChatService } from '../chat/chat.service';
 
 @Injectable()
 export class OrdersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private chatService: ChatService, 
+  ) {}
 
   async createOrder(data: any) {
-    return this.prisma.order.create({ data });
+    const order = await this.prisma.order.create({ data });
+    await this.chatService.createChat(order.id);
+    return order;
   }
 
   async updateOrderStatus(orderId: number, status: OrderStatus) {
@@ -21,3 +27,4 @@ export class OrdersService {
     return this.prisma.order.findMany({ where: { userId } });
   }
 }
+

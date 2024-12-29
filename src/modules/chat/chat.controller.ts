@@ -8,7 +8,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ChatService } from './chat.service';
-import { JwtAuthGuard } from '../../shared/guards/jwt-auth.guard';
+import { JwtAuthGuard } from 'shared/guards/jwt-auth.guard';
+import { RolesGuard } from 'shared/guards/roles.guard';
 
 @Controller('chats')
 @UseGuards(JwtAuthGuard)
@@ -32,6 +33,7 @@ export class ChatController {
   }
 
   @Patch(':id/close')
+  @UseGuards(RolesGuard)
   async closeChatRoom(
     @Param('id') chatRoomId: number,
     @Body('summary') summary: string,
