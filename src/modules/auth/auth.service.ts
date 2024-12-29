@@ -1,4 +1,10 @@
-import { Injectable, Inject, forwardRef, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  forwardRef,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import bcrypt from 'bcryptjs';
@@ -22,12 +28,12 @@ export class AuthService {
     }
     return user;
   }
-  
+
   async login(loginDto: LoginDto) {
     try {
       const { username, password } = loginDto;
       const user = await this.validateUser(username, password);
-      
+
       const payload = {
         username: user.username,
         sub: user.id,
