@@ -11,8 +11,6 @@ import { Request as ExpressRequest } from 'express';
 import { LoginDto } from './dto/login.dto';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-@ApiTags('Authentication')
-@ApiBearerAuth('Authorization')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -34,7 +32,6 @@ export class AuthController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 500, description: 'Internal server error.' })
   async testAuth(@Request() req: ExpressRequest) {
-    console.log(req.user);
     return req.user;
   }
 }
