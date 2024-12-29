@@ -12,6 +12,7 @@ import { LoginDto } from './dto/login.dto';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Authentication')
+@ApiBearerAuth('Authorization')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -27,12 +28,13 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Post('test-auth')
+  @ApiBearerAuth('Authorization')
   @ApiOperation({ summary: 'Test JWT authentication' })
-  @ApiBearerAuth()
   @ApiResponse({ status: 200, description: 'Authentication successful.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 500, description: 'Internal server error.' })
   async testAuth(@Request() req: ExpressRequest) {
+    console.log(req.user);
     return req.user;
   }
 }

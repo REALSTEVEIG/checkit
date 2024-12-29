@@ -13,8 +13,12 @@ async function bootstrap() {
     .setTitle('Order-Chat System')
     .setDescription('API for managing orders and chats')
     .setVersion('1.0')
-    .addBearerAuth()
+    .addBearerAuth(
+      { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
+      'Authorization',
+    )
     .build();
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
