@@ -12,10 +12,23 @@ export class OrdersService {
 
   async createOrder(data: any) {
     try {
-      const order = await this.prisma.order.create({ data });
+      if (!data.userId) {
+        throw new HttpException('userId is required', HttpStatus.BAD_REQUEST);
+      }
+
+      const order = await this.prisma.order.create({
+        data: {
+          description: data.description,
+          specifications: data.specifications,
+          quantity: data.quantity,
+          metadata: data.metadata,
+          userId: data.userId,
+        },
+      });
       await this.chatService.createChat(order.id);
       return order;
     } catch (error: any) {
+      console.error('Error creating order:', error.message);
       throw new HttpException(
         `Error creating order: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,

@@ -32,7 +32,11 @@ export class ChatService {
         where: { id: chatRoomId },
       });
 
-      if (chatRoom?.isClosed) {
+      if (!chatRoom) {
+        throw new HttpException('Chat room not found', HttpStatus.NOT_FOUND);
+      }
+
+      if (chatRoom.isClosed) {
         throw new BadRequestException(
           'Chat room is closed. Cannot add messages.',
         );
@@ -46,6 +50,7 @@ export class ChatService {
         },
       });
     } catch (error: any) {
+      console.error('Error adding message:', error.message);
       throw new HttpException(
         `Error adding message: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
