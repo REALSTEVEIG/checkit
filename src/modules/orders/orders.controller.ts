@@ -31,6 +31,7 @@ import { CustomRequest } from '../../global';
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('Authorization')
   @Post()
   @ApiOperation({ summary: 'Create a new order' })
@@ -43,8 +44,7 @@ export class OrdersController {
   ) {
     try {
       const user = req.user;
-      const userId = user?.sub;
-      console.log('User', user);
+      const userId = user?.id;
       if (!userId) {
         throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
       }
