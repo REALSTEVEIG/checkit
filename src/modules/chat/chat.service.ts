@@ -71,7 +71,7 @@ export class ChatService {
 
   async getMessages(chatRoomId: number) {
     return this.prisma.message.findMany({
-      where: { chatRoomId },
+      where: { chatRoomId: Number(chatRoomId) },
       orderBy: { createdAt: 'asc' },
     });
   }
