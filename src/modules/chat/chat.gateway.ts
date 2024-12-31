@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   WebSocketGateway,
   SubscribeMessage,
@@ -15,25 +16,37 @@ export class ChatGateway {
 
   constructor(private chatService: ChatService) {}
 
-  @SubscribeMessage('sendMessage')
-  async handleSendMessage(
-    @MessageBody() data: { chatId: number; senderId: number; content: string },
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  @SubscribeMessage('joinChat')
+  handleJoinChat(
+    @MessageBody() data: { chatRoomId: number },
     @ConnectedSocket() client: Socket,
   ) {
+    client.join(`chat_${data.chatRoomId}`);
+  }
+
+  @SubscribeMessage('sendMessage')
+  async handleSendMessage(
+    @MessageBody()
+    data: { chatRoomId: number; senderId: number; content: string },
+    @ConnectedSocket() _client: Socket,
+  ) {
     const message = await this.chatService.addMessage(
-      data.chatId,
+      data.chatRoomId,
       data.senderId,
       data.content,
     );
-    this.server.to(`chat_${data.chatId}`).emit('newMessage', message);
+    this.server.to(`chat_${data.chatRoomId}`).emit('newMessage', message);
   }
 
   @SubscribeMessage('closeChat')
   async handleCloseChat(
-    @MessageBody() data: { chatId: number; summary: string },
+    @MessageBody() data: { chatRoomId: number; summary: string },
+    @ConnectedSocket() _client: Socket,
   ) {
-    const chat = await this.chatService.closeChat(data.chatId, data.summary);
-    this.server.emit(`chat_closed_${data.chatId}`, chat);
+    const chat = await this.chatService.closeChat(
+      data.chatRoomId,
+      data.summary,
+    );
+    this.server.to(`chat_${data.chatRoomId}`).emit('chatClosed', chat);
   }
 }

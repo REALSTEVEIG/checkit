@@ -20,9 +20,12 @@ import { Roles } from 'shared/decorators/roles.decorator';
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth('Authorization')
   @Post('message')
+  @ApiBearerAuth('Authorization')
+  @ApiOperation({ summary: 'Send a message in a chat room' })
+  @ApiResponse({ status: 201, description: 'Message sent successfully.' })
+  @ApiResponse({ status: 404, description: 'Chat room not found.' })
+  @ApiResponse({ status: 400, description: 'Chat room is closed.' })
   async sendMessage(
     @Body() data: { chatRoomId: number; senderId: number; content: string },
   ) {
@@ -33,7 +36,6 @@ export class ChatController {
         data.content,
       );
     } catch (error: any) {
-      console.error('Error sending message:', error.message);
       throw new HttpException(
         error.message || 'Failed to send message',
         error.status || HttpStatus.INTERNAL_SERVER_ERROR,
@@ -42,12 +44,21 @@ export class ChatController {
   }
 
   @Get(':id/messages')
+  @ApiBearerAuth('Authorization')
+  @ApiOperation({ summary: 'Get all messages in a chat room' })
+  @ApiResponse({ status: 200, description: 'Messages retrieved successfully.' })
+  @ApiResponse({ status: 404, description: 'Chat room not found.' })
   async getMessages(@Param('id') chatRoomId: number) {
     return this.chatService.getMessages(chatRoomId);
   }
 
   @Patch(':id/close')
   @UseGuards(RolesGuard)
+  @Roles('Admin')
+  @ApiBearerAuth('Authorization')
+  @ApiOperation({ summary: 'Close a chat room (Admin only)' })
+  @ApiResponse({ status: 200, description: 'Chat room closed successfully.' })
+  @ApiResponse({ status: 404, description: 'Chat room not found.' })
   async closeChatRoom(
     @Param('id') chatRoomId: number,
     @Body('summary') summary: string,
@@ -55,11 +66,11 @@ export class ChatController {
     return this.chatService.closeChat(chatRoomId, summary);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('Admin')
   @Get('active-rooms')
+  @UseGuards(RolesGuard)
+  @Roles('Admin')
   @ApiBearerAuth('Authorization')
-  @ApiOperation({ summary: 'Get all active chat rooms' })
+  @ApiOperation({ summary: 'Get all active chat rooms (Admin only)' })
   @ApiResponse({
     status: 200,
     description: 'Chat rooms retrieved successfully.',

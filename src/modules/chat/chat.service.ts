@@ -11,82 +11,69 @@ export class ChatService {
   constructor(private prisma: PrismaService) {}
 
   async createChat(orderId: number) {
-    try {
-      return await this.prisma.chatRoom.create({
-        data: {
-          orderId,
-          isClosed: false,
-        },
-      });
-    } catch (error: any) {
-      throw new HttpException(
-        `Error creating chat: ${error.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+    return this.prisma.chatRoom.create({
+      data: {
+        orderId,
+        isClosed: false,
+      },
+    });
   }
 
   async addMessage(chatRoomId: number, senderId: number, content: string) {
-    try {
-      const chatRoom = await this.prisma.chatRoom.findUnique({
-        where: { id: chatRoomId },
-      });
+    const chatRoom = await this.prisma.chatRoom.findUnique({
+      where: { id: chatRoomId },
+      include: { order: true },
+    });
 
-      if (!chatRoom) {
-        throw new HttpException('Chat room not found', HttpStatus.NOT_FOUND);
-      }
+    if (!chatRoom) {
+      throw new HttpException('Chat room not found', HttpStatus.NOT_FOUND);
+    }
 
-      if (chatRoom.isClosed) {
-        throw new BadRequestException(
-          'Chat room is closed. Cannot add messages.',
-        );
-      }
-
-      return await this.prisma.message.create({
-        data: {
-          chatRoomId,
-          senderId,
-          content,
-        },
-      });
-    } catch (error: any) {
-      console.error('Error adding message:', error.message);
-      throw new HttpException(
-        `Error adding message: ${error.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
+    if (chatRoom.isClosed) {
+      throw new BadRequestException(
+        'Chat room is closed. Cannot add messages.',
       );
     }
+
+    if (chatRoom.order.userId !== senderId) {
+      throw new HttpException(
+        'Unauthorized access to chat room.',
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    return this.prisma.message.create({
+      data: {
+        chatRoomId,
+        senderId,
+        content,
+      },
+    });
   }
 
   async closeChat(chatRoomId: number, summary: string) {
-    try {
-      return await this.prisma.chatRoom.update({
-        where: { id: chatRoomId },
-        data: {
-          isClosed: true,
-          summary,
-        },
-      });
-    } catch (error: any) {
-      throw new HttpException(
-        `Error closing chat: ${error.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+    const chatRoom = await this.prisma.chatRoom.findUnique({
+      where: { id: chatRoomId },
+    });
+
+    if (!chatRoom) {
+      throw new HttpException('Chat room not found', HttpStatus.NOT_FOUND);
     }
+
+    return this.prisma.chatRoom.update({
+      where: { id: chatRoomId },
+      data: {
+        isClosed: true,
+        summary,
+      },
+    });
   }
 
   async getMessages(chatRoomId: number) {
-    try {
-      return await this.prisma.message.findMany({
-        where: { chatRoomId },
-        orderBy: { createdAt: 'asc' },
-      });
-    } catch (error: any) {
-      throw new HttpException(
-        `Error retrieving messages: ${error.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+    return this.prisma.message.findMany({
+      where: { chatRoomId },
+      orderBy: { createdAt: 'asc' },
+    });
   }
 
   async getActiveChatRooms() {
