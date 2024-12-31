@@ -41,12 +41,34 @@ export class ChatGateway {
   @SubscribeMessage('closeChat')
   async handleCloseChat(
     @MessageBody() data: { chatRoomId: number; summary: string },
-    @ConnectedSocket() _client: Socket,
+    @ConnectedSocket() client: Socket,
   ) {
+    const { role } = client.handshake.auth;
+    if (role !== 'ADMIN') {
+      client.emit('error', {
+        message: 'Access Denied: Only Admins can close chats.',
+      });
+      return;
+    }
+
     const chat = await this.chatService.closeChat(
       data.chatRoomId,
       data.summary,
     );
     this.server.to(`chat_${data.chatRoomId}`).emit('chatClosed', chat);
+  }
+
+  @SubscribeMessage('getActiveChatRooms')
+  async handleGetActiveChatRooms(@ConnectedSocket() client: Socket) {
+    const { role } = client.handshake.auth;
+    if (role !== 'ADMIN') {
+      client.emit('error', {
+        message: 'Access Denied: Only Admins can access active chat rooms.',
+      });
+      return;
+    }
+
+    const activeRooms = await this.chatService.getActiveChatRooms();
+    client.emit('activeChatRooms', activeRooms);
   }
 }
