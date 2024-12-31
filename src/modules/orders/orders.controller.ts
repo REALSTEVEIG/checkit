@@ -27,7 +27,7 @@ import { CustomRequest } from '../../global';
 
 @ApiTags('Orders')
 @Controller('orders')
-@UseGuards(RolesGuard)
+@UseGuards(JwtAuthGuard)
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
@@ -62,10 +62,10 @@ export class OrdersController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
   @Patch(':id/status')
+  @UseGuards(RolesGuard)
+  @Roles('ADMIN')
   @ApiBearerAuth('Authorization')
-  @Roles('Admin')
   @ApiOperation({ summary: 'Update the status of an order' })
   @ApiParam({ name: 'id', description: 'The ID of the order' })
   @ApiResponse({
@@ -78,7 +78,11 @@ export class OrdersController {
     @Param('id') id: number,
     @Body() status: OrderStatus,
   ) {
-    return this.ordersService.updateOrderStatus(id, status);
+    try {
+      return this.ordersService.updateOrderStatus(id, status);
+    } catch (error) {
+      return error;
+    }
   }
 
   @UseGuards(JwtAuthGuard)

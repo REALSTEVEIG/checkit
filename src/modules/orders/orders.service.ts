@@ -1,6 +1,5 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { PrismaService } from 'shared/services/prisma.services';
-import { OrderStatus } from './orders.entity';
 import { ChatService } from '../chat/chat.service';
 
 @Injectable()
@@ -29,7 +28,7 @@ export class OrdersService {
       const chatRoom = await this.chatService.createChat(order.id);
 
       const updatedOrder = await this.prisma.order.update({
-        where: { id: order.id },
+        where: { id: Number(order.id) },
         data: { chatRoomId: chatRoom.id },
       });
 
@@ -43,11 +42,12 @@ export class OrdersService {
     }
   }
 
-  async updateOrderStatus(orderId: number, status: OrderStatus) {
+  async updateOrderStatus(orderId: number, status: any) {
+    console.log('status', status);
     try {
       return await this.prisma.order.update({
-        where: { id: orderId },
-        data: { status },
+        where: { id: Number(orderId) },
+        data: { status: status.status },
       });
     } catch (error: any) {
       throw new HttpException(
@@ -57,7 +57,7 @@ export class OrdersService {
     }
   }
   async findOrdersByUser(userId: number, requesterId: number, role: string) {
-    if (role !== 'Admin' && userId !== requesterId) {
+    if (role !== 'ADMIN' && userId !== requesterId) {
       throw new HttpException(
         'Unauthorized access to orders.',
         HttpStatus.FORBIDDEN,
