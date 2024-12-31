@@ -26,7 +26,7 @@ export class ChatGateway {
       data.senderId,
       data.content,
     );
-    this.server.emit(`chat_${data.chatId}`, message);
+    this.server.to(`chat_${data.chatId}`).emit('newMessage', message);
   }
 
   @SubscribeMessage('closeChat')

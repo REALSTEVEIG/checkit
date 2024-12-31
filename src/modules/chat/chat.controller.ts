@@ -12,7 +12,8 @@ import {
 import { ChatService } from './chat.service';
 import { JwtAuthGuard } from 'shared/guards/jwt-auth.guard';
 import { RolesGuard } from 'shared/guards/roles.guard';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Roles } from 'shared/decorators/roles.decorator';
 
 @Controller('chats')
 @UseGuards(JwtAuthGuard)
@@ -52,5 +53,18 @@ export class ChatController {
     @Body('summary') summary: string,
   ) {
     return this.chatService.closeChat(chatRoomId, summary);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('Admin')
+  @Get('active-rooms')
+  @ApiBearerAuth('Authorization')
+  @ApiOperation({ summary: 'Get all active chat rooms' })
+  @ApiResponse({
+    status: 200,
+    description: 'Chat rooms retrieved successfully.',
+  })
+  async getActiveChatRooms() {
+    return this.chatService.getActiveChatRooms();
   }
 }

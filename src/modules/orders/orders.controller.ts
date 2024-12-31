@@ -89,7 +89,14 @@ export class OrdersController {
   @ApiResponse({ status: 200, description: 'Orders retrieved successfully.' })
   @ApiResponse({ status: 404, description: 'No orders found for the user.' })
   @ApiResponse({ status: 500, description: 'Internal server error.' })
-  async getOrdersByUser(@Param('userId') userId: number) {
-    return this.ordersService.findOrdersByUser(userId);
+  async getOrdersByUser(
+    @Param('userId') userId: number,
+    @Request() req: CustomRequest,
+  ) {
+    return this.ordersService.findOrdersByUser(
+      userId,
+      req.user.id,
+      req.user.role,
+    );
   }
 }

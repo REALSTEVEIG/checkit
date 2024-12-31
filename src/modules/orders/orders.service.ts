@@ -49,15 +49,14 @@ export class OrdersService {
       );
     }
   }
-
-  async findOrdersByUser(userId: number) {
-    try {
-      return await this.prisma.order.findMany({ where: { userId } });
-    } catch (error: any) {
+  async findOrdersByUser(userId: number, requesterId: number, role: string) {
+    if (role !== 'Admin' && userId !== requesterId) {
       throw new HttpException(
-        `Error finding orders: ${error.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        'Unauthorized access to orders.',
+        HttpStatus.FORBIDDEN,
       );
     }
+
+    return this.prisma.order.findMany({ where: { userId } });
   }
 }

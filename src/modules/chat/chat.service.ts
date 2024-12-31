@@ -88,4 +88,11 @@ export class ChatService {
       );
     }
   }
+
+  async getActiveChatRooms() {
+    return this.prisma.chatRoom.findMany({
+      where: { isClosed: false },
+      include: { order: true },
+    });
+  }
 }
