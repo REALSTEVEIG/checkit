@@ -9,6 +9,11 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe());
 
+  app.enableCors({
+    origin: 'http://localhost:5173',
+    credentials: true,
+  });
+
   const config = new DocumentBuilder()
     .setTitle('Order-Chat System')
     .setDescription('API for managing orders and chats')

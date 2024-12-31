@@ -7,6 +7,7 @@ CREATE TYPE "OrderStatus" AS ENUM ('REVIEW', 'PROCESSING', 'COMPLETED');
 -- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
+    "username" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "role" "Role" NOT NULL DEFAULT 'USER',
@@ -54,10 +55,13 @@ CREATE TABLE "Message" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
-CREATE INDEX "User_email_idx" ON "User"("email");
+CREATE INDEX "User_username_idx" ON "User"("username");
 
 -- CreateIndex
 CREATE INDEX "Order_userId_idx" ON "Order"("userId");
