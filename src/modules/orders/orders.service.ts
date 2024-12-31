@@ -63,6 +63,6 @@ export class OrdersService {
       );
     }
 
-    return this.prisma.order.findMany({ where: { userId } });
+    return this.prisma.order.findMany({ where: { userId: Number(userId) } });
   }
 }
