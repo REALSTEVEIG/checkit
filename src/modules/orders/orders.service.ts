@@ -43,7 +43,6 @@ export class OrdersService {
   }
 
   async updateOrderStatus(orderId: number, status: any) {
-    console.log('status', status);
     try {
       return await this.prisma.order.update({
         where: { id: Number(orderId) },
