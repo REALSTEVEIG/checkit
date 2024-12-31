@@ -54,7 +54,7 @@ export class ChatController {
 
   @Patch(':id/close')
   @UseGuards(RolesGuard)
-  @Roles('Admin')
+  @Roles('ADMIN')
   @ApiBearerAuth('Authorization')
   @ApiOperation({ summary: 'Close a chat room (Admin only)' })
   @ApiResponse({ status: 200, description: 'Chat room closed successfully.' })
@@ -68,7 +68,7 @@ export class ChatController {
 
   @Get('active-rooms')
   @UseGuards(RolesGuard)
-  @Roles('Admin')
+  @Roles('ADMIN')
   @ApiBearerAuth('Authorization')
   @ApiOperation({ summary: 'Get all active chat rooms (Admin only)' })
   @ApiResponse({

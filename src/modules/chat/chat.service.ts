@@ -53,7 +53,7 @@ export class ChatService {
 
   async closeChat(chatRoomId: number, summary: string) {
     const chatRoom = await this.prisma.chatRoom.findUnique({
-      where: { id: chatRoomId },
+      where: { id: Number(chatRoomId) },
     });
 
     if (!chatRoom) {
@@ -61,7 +61,7 @@ export class ChatService {
     }
 
     return this.prisma.chatRoom.update({
-      where: { id: chatRoomId },
+      where: { id: Number(chatRoomId) },
       data: {
         isClosed: true,
         summary,
