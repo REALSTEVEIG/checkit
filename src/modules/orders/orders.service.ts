@@ -25,8 +25,15 @@ export class OrdersService {
           userId: data.userId,
         },
       });
-      await this.chatService.createChat(order.id);
-      return order;
+
+      const chatRoom = await this.chatService.createChat(order.id);
+
+      const updatedOrder = await this.prisma.order.update({
+        where: { id: order.id },
+        data: { chatRoomId: chatRoom.id },
+      });
+
+      return updatedOrder;
     } catch (error: any) {
       console.error('Error creating order:', error.message);
       throw new HttpException(
