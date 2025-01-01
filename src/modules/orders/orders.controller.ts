@@ -19,10 +19,10 @@ import {
 import { Request } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { OrderStatus } from './orders.entity';
-import { Roles } from 'shared/decorators/roles.decorator';
-import { RolesGuard } from 'shared/guards/roles.guard';
+import { Roles } from '@shared/decorators/roles.decorator';
+import { RolesGuard } from '@shared/guards/roles.guard';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { JwtAuthGuard } from 'shared/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '@shared/guards/jwt-auth.guard';
 import { CustomRequest } from '../../global';
 
 @ApiTags('Orders')
@@ -80,6 +80,7 @@ export class OrdersController {
     try {
       return this.ordersService.updateOrderStatus(id, status);
     } catch (error) {
+      console.log('error', error);
       return error;
     }
   }

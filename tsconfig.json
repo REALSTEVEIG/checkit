@@ -8,14 +8,14 @@
     "emitDecoratorMetadata": true,
     "skipLibCheck": true,
     "outDir": "./dist",
-    "baseUrl": "./src",
-    "resolveJsonModule": true
+    "baseUrl": "./",
+    "resolveJsonModule": true,
+    "paths": {
+      "@modules/*": ["src/modules/*"],
+      "@shared/*": ["src/shared/*"],
+      "@config/*": ["src/config/*"]
+    }
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"],
-  "paths": {
-    "@modules/*": ["src/modules/*"],
-    "@shared/*": ["src/shared/*"],
-    "@config/*": ["src/config/*"]
-  }
+  "include": ["src/**/*", "jest.config.ts"],
+  "exclude": ["node_modules", "dist"]
 }

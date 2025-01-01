@@ -1,5 +1,5 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { PrismaService } from 'shared/services/prisma.services';
+import { PrismaService } from '@shared/services/prisma.services';
 import { ChatService } from '../chat/chat.service';
 
 @Injectable()

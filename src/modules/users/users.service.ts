@@ -4,7 +4,7 @@ import {
   HttpStatus,
   ConflictException,
 } from '@nestjs/common';
-import { PrismaService } from 'shared/services/prisma.services';
+import { PrismaService } from '@shared/services/prisma.services';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()

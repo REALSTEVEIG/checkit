@@ -6,7 +6,7 @@ import { UsersModule } from './modules/users/users.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { ChatModule } from './modules/chat/chat.module';
 import { APP_FILTER } from '@nestjs/core';
-import { AllExceptionsFilter } from 'shared/filters/all-exceptions.filter';
+import { AllExceptionsFilter } from '@shared/filters/all-exceptions.filter';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({

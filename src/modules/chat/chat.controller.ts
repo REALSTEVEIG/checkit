@@ -10,10 +10,10 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { ChatService } from './chat.service';
-import { JwtAuthGuard } from 'shared/guards/jwt-auth.guard';
-import { RolesGuard } from 'shared/guards/roles.guard';
+import { JwtAuthGuard } from '@shared/guards/jwt-auth.guard';
+import { RolesGuard } from '@shared/guards/roles.guard';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { Roles } from 'shared/decorators/roles.decorator';
+import { Roles } from '@shared/decorators/roles.decorator';
 
 @Controller('chats')
 @UseGuards(JwtAuthGuard)
