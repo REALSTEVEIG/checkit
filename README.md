@@ -1,89 +1,92 @@
-# Backend API for Order and Chat Management
+# **Order and Chat Management API**
 
-## Overview
-This backend project provides APIs for managing orders, a real-time chat system, and user authentication. It is built using TypeScript and NestJS and follows best practices for API development.
+A backend project built with TypeScript and NestJS, offering APIs for managing orders, a real-time chat system, and user authentication.
 
-## Features
-- **Authentication**: JWT-based authentication with role-based access control.
-- **Order Management**:
-  - Create orders.
-  - Update order statuses (Admin only).
-  - Fetch orders by user.
-- **Chat System**:
-  - Real-time chat using WebSocket.
-  - Back messaging using http.
-  - Chat rooms automatically created for each order.
-  - Admins can close chat rooms with a summary.
-  - Persistent message storage.
-- **Documentation**:
-  - Swagger: Access at [http://localhost:3000/api](http://localhost:3000/api).
-  - Postman: [View Documentation](https://documenter.getpostman.com/view/25652727/2sAYJ7gJx8).
+---
 
-## Getting Started
+## **Features**
+- **Authentication**: JWT-based authentication with role-based access (Admin/Regular users).
+- **Order Management**: Create, update, and fetch orders. 
+- **Chat System**: Real-time chat with WebSocket and persistent message storage.
+- **API Documentation**: Swagger and Postman documentation available.
 
-### Clone the Repository
+---
+
+## **Getting Started**
+
+### **1. Clone the Repository**
 ```bash
 git clone <repository_url>
 cd <repository_directory>
 ```
 
-### Environment Variables
-Create a `.env` file in the root directory and add the following:
+### **2. Set Up Environment Variables**
+Create a `.env` file in the project root:
 ```env
 DATABASE_URL=postgresql://postgres:password@localhost:5432/checkit
 JWT_SECRET=default_secret
 ```
 
-### Install Dependencies
+### **3. Install Dependencies**
 ```bash
 npm install
 ```
 
-### Run the Application
-#### Development Mode:
-```bash
-npm run dev
-```
-#### Production Mode:
-```bash
-npm run start
-```
+### **4. Run the Application**
+- **Development**: 
+  ```bash
+  npm run dev
+  ```
+- **Production**:
+  ```bash
+  npm run start
+  ```
 
-### API Documentation
-- **Swagger**: [http://localhost:3000/api](http://localhost:3000/api).
-- **Postman**: [Documentation Link](https://documenter.getpostman.com/view/25652727/2sAYJ7gJx8).
+---
 
-## Database
-This project uses PostgreSQL with Prisma ORM. Ensure the database connection string is correctly set in the `.env` file. Use the following command to apply migrations:
+## **API Documentation**
+- **Swagger**: [http://localhost:3000/api](http://localhost:3000/api)  
+- **Postman**: [View Documentation](https://documenter.getpostman.com/view/25652727/2sAYJ7gJx8)
+
+---
+
+## **Database**
+This project uses PostgreSQL with Prisma ORM. Ensure your database connection string is correctly set in the `.env` file.  
+
+Run migrations with:
 ```bash
 npx prisma migrate dev
 ```
 
-## Tests
+---
+
+## **Testing**
+Run tests with:
 ```bash
-npn run test
+npm run test
 ```
 
-## Key Functionalities
-1. **Authentication**
-   - Login to obtain a JWT token.
-   - Role-based access for users (Admin and Regular users).
+---
 
-2. **Order Management**
-   - Create orders (Regular users).
-   - Update order status: Review ➔ Processing ➔ Completed (Admins).
-   - Fetch user-specific orders.
+## **Core Functionality**
+### **Authentication**
+- User login with JWT token generation.
+- Role-based access (Admin, Regular user).
 
-3. **Chat System**
-   - Real-time communication using WebSocket.
-   - Chat history is saved persistently.
-   - Only Admins can close chat rooms.
+### **Order Management**
+- Create orders.
+- Admin-only order status updates (e.g., Review ➔ Processing ➔ Completed).
+- Fetch orders by user.
 
-4. **Testing**
-   - Integration tests (coverage required as per the technical requirements).
+### **Chat System**
+- Real-time chat with WebSocket.
+- Persistent chat history.
+- Admins can close chat rooms.
 
-## Contributing
-1. Fork the repository.
-2. Create a new branch for your feature/bug fix.
-3. Commit changes and open a pull request.
+---
+
+## **Contributing**
+1. Fork the repository.  
+2. Create a new branch.  
+3. Make your changes and open a pull request.
 
