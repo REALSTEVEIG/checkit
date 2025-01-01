@@ -22,11 +22,29 @@ export class ChatGateway {
   constructor(private chatService: ChatService) {}
 
   @SubscribeMessage('joinChat')
-  handleJoinChat(
-    @MessageBody() data: { chatRoomId: number },
+  async handleJoinChat(
+    @MessageBody() data: { orderId: number },
     @ConnectedSocket() client: Socket,
   ) {
-    client.join(`chat_${data.chatRoomId}`);
+    const chatRoom = await this.chatService.getChatRoomByOrderId(data.orderId);
+
+    if (!chatRoom) {
+      client.emit('error', { message: 'Chat room not found for this order.' });
+      return;
+    }
+
+    // Authorization check: Only allow access if the user is an admin or owns the order
+    const { userId, role } = client.handshake.auth;
+    if (role !== 'ADMIN' && chatRoom.order.userId !== userId) {
+      client.emit('error', {
+        message: 'Unauthorized access to this chat room.',
+      });
+      return;
+    }
+
+    // Join the room based on the found chatRoomId
+    client.join(`chat_${chatRoom.id}`);
+    client.emit('joinedChat', { chatRoomId: chatRoom.id });
   }
 
   @SubscribeMessage('sendMessage')
@@ -35,6 +53,7 @@ export class ChatGateway {
     data: { chatRoomId: number; senderId: number; content: string },
     @ConnectedSocket() _client: Socket,
   ) {
+    console.log('data', data);
     const message = await this.chatService.addMessage(
       data.chatRoomId,
       data.senderId,

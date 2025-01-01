@@ -10,6 +10,13 @@ import {
 export class ChatService {
   constructor(private prisma: PrismaService) {}
 
+  async getChatRoomByOrderId(orderId: number) {
+    return this.prisma.chatRoom.findUnique({
+      where: { orderId: Number(orderId) },
+      include: { order: true },
+    });
+  }
+
   async createChat(orderId: number) {
     return this.prisma.chatRoom.create({
       data: {
@@ -32,13 +39,6 @@ export class ChatService {
     if (chatRoom.isClosed) {
       throw new BadRequestException(
         'Chat room is closed. Cannot add messages.',
-      );
-    }
-
-    if (chatRoom.order.userId !== senderId) {
-      throw new HttpException(
-        'Unauthorized access to chat room.',
-        HttpStatus.FORBIDDEN,
       );
     }
 

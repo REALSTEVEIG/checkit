@@ -27,7 +27,6 @@ import { CustomRequest } from '../../global';
 
 @ApiTags('Orders')
 @Controller('orders')
-@UseGuards(JwtAuthGuard)
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
