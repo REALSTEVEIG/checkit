@@ -9,7 +9,12 @@ import {
 import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
 
-@WebSocketGateway()
+@WebSocketGateway({
+  cors: {
+    origin: 'http://localhost:5173',
+    credentials: true,
+  },
+})
 export class ChatGateway {
   @WebSocketServer()
   server!: Server;
