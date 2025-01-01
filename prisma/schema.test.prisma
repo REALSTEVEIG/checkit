@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" // Replace with your database type
+  url      = env("DATABASE_URL_TEST") // Ensure this variable is set in your .env file
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  username  String    @unique  // Add this field
+  email     String    @unique
+  password  String
+  role      Role      @default(USER)
+  orders    Order[]   @relation("UserOrders")
+  messages  Message[] @relation("UserMessages")
+
+  @@index([username]) // Index for faster user lookups by username
+}
+
+model Order {
+  id           Int       @id @default(autoincrement())
+  description  String
+  specifications String
+  quantity     Int
+  metadata     Json?
+  status       OrderStatus @default(REVIEW)
+  userId       Int
+  user         User        @relation("UserOrders", fields: [userId], references: [id])
+  chatRoom     ChatRoom?   @relation("OrderChatRoom") // Define the relation name only
+  chatRoomId   Int?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@index([userId]) // Index for filtering by user
+}
+
+model ChatRoom {
+  id           Int       @id @default(autoincrement())
+  orderId      Int       @unique
+  order        Order     @relation("OrderChatRoom", fields: [orderId], references: [id]) // Keep fields and references here
+  messages     Message[]
+  isClosed     Boolean   @default(false)
+  summary      String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([isClosed]) // Index for filtering open or closed chat rooms
+}
+
+model Message {
+  id         Int       @id @default(autoincrement())
+  content    String
+  senderId   Int
+  sender     User      @relation("UserMessages", fields: [senderId], references: [id])
+  chatRoomId Int
+  chatRoom   ChatRoom  @relation(fields: [chatRoomId], references: [id])
+  createdAt  DateTime  @default(now())
+
+  @@index([chatRoomId]) // Index for efficient querying within chat rooms
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum OrderStatus {
+  REVIEW
+  PROCESSING
+  COMPLETED
+}
