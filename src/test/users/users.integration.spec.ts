@@ -1,13 +1,17 @@
-// test/users/users.integration.spec.ts
 import { INestApplication, HttpStatus } from '@nestjs/common';
 import request from 'supertest';
 import { setupTestApp, resetDatabase, closeTestApp } from '../setup';
+import { PrismaService } from '@shared/services/prisma.services';
+import { faker } from '@faker-js/faker';
 
 describe('Users Controller (Integration)', () => {
   let app: INestApplication;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  let prismaService: PrismaService;
 
   beforeAll(async () => {
     app = await setupTestApp();
+    prismaService = app.get(PrismaService);
     await resetDatabase();
   });
 
@@ -18,8 +22,8 @@ describe('Users Controller (Integration)', () => {
   describe('/users/register (POST)', () => {
     it('should register a new user successfully', async () => {
       const userDto = {
-        username: 'newuser',
-        email: 'newuser@example.com',
+        username: faker.internet.userName(),
+        email: faker.internet.email(),
         password: 'securepassword',
       };
 
@@ -35,8 +39,8 @@ describe('Users Controller (Integration)', () => {
 
     it('should return 400 for duplicate email or username', async () => {
       const userDto = {
-        username: 'duplicateuser',
-        email: 'duplicate@example.com',
+        username: faker.internet.userName(),
+        email: faker.internet.email(),
         password: 'securepassword',
       };
 
@@ -55,9 +59,9 @@ describe('Users Controller (Integration)', () => {
 
     it('should return 400 for invalid input data', async () => {
       const userDto = {
-        username: '',
+        username: 1,
         email: 'invalidemail',
-        password: '',
+        password: 1,
       };
 
       await request(app.getHttpServer())

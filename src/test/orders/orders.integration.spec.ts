@@ -1,4 +1,3 @@
-// test/orders/orders.integration.spec.ts
 import { INestApplication, HttpStatus } from '@nestjs/common';
 import request from 'supertest';
 import { setupTestApp, resetDatabase, closeTestApp } from '../setup';
@@ -27,6 +26,7 @@ describe('Orders Controller (Integration)', () => {
 
       const response = await request(app.getHttpServer())
         .post('/orders')
+        .set('Authorization', 'Bearer <valid-jwt-token>') // Add JWT token for authorization
         .send(orderDto)
         .expect(HttpStatus.CREATED);
 

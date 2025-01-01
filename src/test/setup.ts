@@ -22,10 +22,10 @@ export const setupTestApp = async (): Promise<INestApplication> => {
   return app;
 };
 
-export const resetDatabase = async () => {
-  if (!prisma) throw new Error('PrismaService is not initialized');
-  await prisma.$executeRaw`TRUNCATE TABLE "Order", "ChatRoom", "Message", "User" RESTART IDENTITY CASCADE;`;
-};
+export async function resetDatabase() {
+  const prismaService = app.get(PrismaService);
+  await prismaService.$executeRaw`TRUNCATE TABLE "User", "Order", "ChatRoom", "Message" RESTART IDENTITY CASCADE;`;
+}
 
 export const closeTestApp = async () => {
   await prisma.$disconnect();

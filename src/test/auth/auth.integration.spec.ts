@@ -1,7 +1,8 @@
-// test/auth/auth.integration.spec.ts
 import { INestApplication, HttpStatus } from '@nestjs/common';
 import request from 'supertest';
 import { setupTestApp, resetDatabase, closeTestApp } from '../setup';
+import bcrypt from 'bcryptjs';
+import { PrismaService } from '@shared/services/prisma.services';
 
 describe('Auth Controller (Integration)', () => {
   let app: INestApplication;
@@ -9,6 +10,14 @@ describe('Auth Controller (Integration)', () => {
   beforeAll(async () => {
     app = await setupTestApp();
     await resetDatabase();
+    const prismaService = app.get(PrismaService);
+    await prismaService.user.create({
+      data: {
+        username: 'testuser',
+        password: await bcrypt.hash('password', 10),
+        email: 'testuser@example.com',
+      },
+    });
   });
 
   afterAll(async () => {
@@ -17,15 +26,6 @@ describe('Auth Controller (Integration)', () => {
 
   describe('/auth/login (POST)', () => {
     it('should authenticate and return a JWT token', async () => {
-      // Seed user
-      await app.get('PrismaService').user.create({
-        data: {
-          username: 'testuser',
-          password: '$2a$10$hashedpassword',
-          email: 'testuser@example.com',
-        },
-      });
-
       const loginDto = { username: 'testuser', password: 'password' };
 
       const response = await request(app.getHttpServer())
@@ -37,7 +37,7 @@ describe('Auth Controller (Integration)', () => {
     });
 
     it('should return 401 for invalid credentials', async () => {
-      const loginDto = { username: 'invaliduser', password: 'password' };
+      const loginDto = { username: 'invaliduser', password: 'wrongpassword' };
 
       await request(app.getHttpServer())
         .post('/auth/login')

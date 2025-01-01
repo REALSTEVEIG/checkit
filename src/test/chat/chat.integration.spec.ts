@@ -1,13 +1,15 @@
-// test/chat/chat.integration.spec.ts
 import { INestApplication, HttpStatus } from '@nestjs/common';
 import request from 'supertest';
 import { setupTestApp, resetDatabase, closeTestApp } from '../setup';
+import { PrismaService } from '@shared/services/prisma.services';
 
 describe('Chat Controller (Integration)', () => {
   let app: INestApplication;
+  let prismaService: PrismaService;
 
   beforeAll(async () => {
     app = await setupTestApp();
+    prismaService = app.get(PrismaService); // Initialize PrismaService
     await resetDatabase();
   });
 
@@ -18,7 +20,7 @@ describe('Chat Controller (Integration)', () => {
   describe('/chats/message (POST)', () => {
     it('should add a message to a chat room', async () => {
       // Seed chat room
-      const chatRoom = await app.get('PrismaService').chatRoom.create({
+      const chatRoom = await prismaService.chatRoom.create({
         data: { orderId: 1, isClosed: false },
       });
 
