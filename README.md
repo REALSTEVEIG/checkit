@@ -59,6 +59,11 @@ This project uses PostgreSQL with Prisma ORM. Ensure the database connection str
 npx prisma migrate dev
 ```
 
+## Tests
+```bash
+npn run test
+```
+
 ## Key Functionalities
 1. **Authentication**
    - Login to obtain a JWT token.
