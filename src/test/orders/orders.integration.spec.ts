@@ -26,7 +26,7 @@ describe('Orders Controller (Integration)', () => {
 
       const response = await request(app.getHttpServer())
         .post('/orders')
-        .set('Authorization', 'Bearer <valid-jwt-token>') // Add JWT token for authorization
+        .set('Authorization', 'Bearer <valid-jwt-token>')
         .send(orderDto)
         .expect(HttpStatus.CREATED);
 
