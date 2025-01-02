@@ -9,7 +9,7 @@ describe('Chat Controller (Integration)', () => {
 
   beforeAll(async () => {
     app = await setupTestApp();
-    prismaService = app.get(PrismaService); // Initialize PrismaService
+    prismaService = app.get(PrismaService);
     await resetDatabase();
   });
 
@@ -19,14 +19,21 @@ describe('Chat Controller (Integration)', () => {
 
   describe('/chats/message (POST)', () => {
     it('should add a message to a chat room', async () => {
-      // Seed chat room
+      // Seed user and chat room
+      const user = await prismaService.user.create({
+        data: {
+          username: 'user1',
+          email: 'user1@example.com',
+          password: 'password',
+        },
+      });
       const chatRoom = await prismaService.chatRoom.create({
         data: { orderId: 1, isClosed: false },
       });
 
       const messageDto = {
         chatRoomId: chatRoom.id,
-        senderId: 1,
+        senderId: user.id,
         content: 'Test message',
       };
 
